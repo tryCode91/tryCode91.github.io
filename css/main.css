@@ -1,0 +1,37 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1; /* Makes the container take available space */
+}
+
+footer
+{
+    background-color: #f8f9fa; /* Optional: Light background for footer */
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.Box
+{
+    width: 100px;
+    height: 100px;
+    color: red;
+    border: 2px solid black;
+    margin-top:10px;
+    border-radius: 25px;
+}
+
+.Box:hover
+{
+    background-color: blue;
+    cursor: pointer;
+}
