@@ -1,5 +1,5 @@
 $(function() {
-  
+
   // Global Variables
   let playerWon = false; // keep track of lose and win
   let tick=4; // Start value for number of random boxes to guess
