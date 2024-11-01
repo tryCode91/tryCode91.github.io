@@ -13,27 +13,41 @@
 
   </head>
   <body>
+
     <div class="container bg-light mt-5">
       
-      <div>
-        <h1>Boxing</h1>
+      <div class="row">
+      
+        <div class="col-9">
+          <h1>Memory</h1>
+        </div>
+        
+        <!-- Level info -->
+        <div class="col-3">
+          <div class="text-end font-weight-bold h1 text-primary">Level <span class="level text-dark">1</span></div>
+        </div>
+        
       </div>
       
-      <div class="row mt-2">
-          
+      <div class="row mt-3">
+
         <div class="col-5">
-          <p>How many menu Boxes would you like to create?</p>
+          <p class="query">How many Boxes would you like to create?</p>
         </div>
-        
-       <div class="col-5 input-group mb-3">
-        <input type="number" class="form-control" id="menuItems" placeholder="Boxes" aria-label="Neither" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-          <button id="createMenuItems" class="btn btn-outline-secondary" type="button">Send</button>
+
+        <div class="col-5 input-group mb-1">
+          <input type="number" class="form-control" id="menuItems" placeholder="Boxes" aria-label="Neither" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button id="createMenuItems" class="btn btn-outline-secondary" type="button">Send</button>
+          </div>
         </div>
-      </div>
-        
+      
       </div>
 
+      <div>
+        <p><i class="info">One line of boxes is 8, 2 lines is 16 ... </i></p>
+      </div>
+      
       <hr class="bg-dark"/>
 
       <!-- Menu items -->
@@ -48,6 +62,12 @@
       <!-- Success message -->
       <div class="row mt-4" id="won-container" style="display: none;">
         <div class="col alert alert-success" id="won">
+        </div>
+      </div>
+
+      <!-- Retry message -->
+      <div class="row mt-4" id="retry-container" style="display: none;">
+        <div class="col-6 mx-auto" id="retry">
         </div>
       </div>
 

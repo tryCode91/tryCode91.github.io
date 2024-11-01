@@ -10,6 +10,7 @@ body {
 
 .container {
     flex: 1; /* Makes the container take available space */
+    height: 100vh;
 }
 
 footer
@@ -34,4 +35,53 @@ footer
 {
     background-color: blue;
     cursor: pointer;
+}
+
+.info
+{
+    font-size: 18px;
+}
+
+.query
+{
+    font-size: 18px;
+}
+
+.inactive-button {
+  pointer-events: none; /* Prevent clicks */
+  opacity: 0.5; /* Make it look disabled */
+}
+
+#retry
+{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.retry-area
+{
+    cursor: pointer;
+    margin-left: -2em !important;
+}
+
+.disable-click
+{
+    pointer-events: none;
+}
+
+.enable-click
+{
+    pointer-events: auto;
+}
+
+.level
+{
+    font-weight: normal;
+}
+
+.mr-auto
+{
+    margin-right: 0 !important;
 }
