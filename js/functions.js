@@ -1,12 +1,15 @@
-$(function() {
+// Import the function from utils.js
+import { SetHighscore } from './highscore.js';
 
+$(function() {
+  
   // Global Variables
   let playerWon = false; // keep track of lose and win
   let tick=4; // Start value for number of random boxes to guess
   let maxLines = 5; // Number of lines of, boxes = maxLines * 8
   let running=false;
   let animationFrameId; // Track the request ID to cancel it if needed
-  let globalMenuItems=0;
+  let lines=0;
   let boxes=0; // One line is 8 boxes
   let message="";
   let randomBoxes = [];
@@ -30,7 +33,7 @@ $(function() {
       $("#message-container").hide();
 
       UpdateRunning(true);
-
+      
       // Start the game
       StartGameLoop();
 
@@ -42,11 +45,11 @@ $(function() {
   function ValidateInput()
   {
 
-    if( globalMenuItems <= 0 )
+    if( lines <= 0 )
     {
       message="Select a number that is larger than 0!"; 
     }
-    else if ( globalMenuItems > maxLines )
+    else if ( lines > maxLines )
     {
       message="Select a number that is smaller than or equal to " + maxLines + "!";
     }
@@ -65,6 +68,9 @@ $(function() {
     
     if (!running) return;
     
+    // Condition to check if boxes are equal to number of tick
+    CompletedLine();
+
     UpdateBoxes();
 
     // 4 Sequences of animations running in Order, put all the four inside a function
@@ -87,7 +93,24 @@ $(function() {
     WinOrLose();
 
   }
-  
+  function CompletedLine()
+  {
+    console.log("Boxes " + boxes);
+    console.log("tick " + tick);  
+    
+    if (boxes == tick)
+    {
+      StopGameLoop();
+      UpdatePlayerWon(true);
+      tick++;
+      UpdateTick(tick);
+      level++;
+      UpdateLevel(level);
+      lines++;
+      UpdateLines(lines);
+    }
+  }
+
   function WinOrLose()
   {
     // If user lost
@@ -114,69 +137,67 @@ $(function() {
     // User won, update tick value +1 and run game loop
     if(playerWon)
     {
-      
       fadeInAndOut();
-
       // Reset playerWon
       UpdatePlayerWon(false);
-
     }
 
   }
 
   // Function to wrap fadeIn in a Promise
-  function fadeIn(element, duration) {
-    return new Promise((resolve) => {
-      $(element).fadeIn(duration, function() {
-        
+  function fadeIn(element, duration) 
+  {
+    return new Promise((resolve) => 
+    {
+      $(element).fadeIn(duration, function() 
+      {
         resolve(); // Resolve the promise when fadeIn is complete
-      
       });
     });
   }
 
   // Function to wrap fadeOut in a Promise
-  function fadeOut(element, duration) {
-    return new Promise((resolve) => {
-      $(element).fadeOut(duration, function() {
-
+  function fadeOut(element, duration) 
+  {
+    return new Promise((resolve) => 
+    {
+      $(element).fadeOut(duration, function() 
+      {
         resolve(); // Resolve the promise when fadeOut is complete
-      
       });
     });
   }
 
   // Function to create a delay using a Promise
-  function sleep(duration) {
+  function sleep(duration)
+  {
     return new Promise((resolve) => setTimeout(resolve, duration));
   }
 
   // Async function to perform fade-in, wait, and then fade-out
   async function fadeInAndOut() {
+
     $("#won").html("You Won and now advance to the next level!");
     const element = "#won-container";
     await fadeIn(element, 1000); // Wait for fade-in to complete (1 second)
     await sleep(2000);           // Wait for 2 seconds
     await fadeOut(element, 1000); // Wait for fade-out to complete (1 second)
+
   }
 
   function StartGameLoop()
   {
-  
     if(!running) UpdateRunning(true);
     GameLoop();
     console.log("Game Loop Started.");
-  
   }
 
   function StopGameLoop()
   {
-
     $("#retry-container").hide();
     UpdateRunning(false);  
     cancelAnimationFrame(animationFrameId); // Cancel the current animation frame
     console.log("Game loop stopped.");
-  
   }
   
   function CheckScore()
@@ -249,12 +270,15 @@ $(function() {
     // Checking if every guess was correct
     if (numberOfGuesses == 1 && correctGuesses == tick)
     {
-      // Player won!
+      // Player won! // This will Run only ONCE per round
       UpdatePlayerWon(true);
       tick++;
       UpdateTick(tick);
       level++;
       UpdateLevel(level);
+
+      // Add the current highscore
+      SetHighscore(level, lines);
 
       // Request the next frame and store the ID
       animationFrameId = requestAnimationFrame(GameLoop);
@@ -394,7 +418,7 @@ $(function() {
     
     // Clear out old data
     parent.html("");
-  
+
     for ( let i = 0; i < parentMax; i++ )  
     {
       children+="<div class='col'>";
@@ -408,7 +432,7 @@ $(function() {
 
   function UpdateMenuItems(menuItems)
   {
-      globalMenuItems = menuItems;
+      lines = menuItems;
   }
 
   // Update playerWon with a function because the global variable does not want to be updated ...
@@ -427,10 +451,15 @@ $(function() {
       running=trueOrFalse;
   }
   
+  function UpdateLines(number)
+  {
+      lines=number;
+  }
+  
   function UpdateBoxes()
   {
     // Boxes start at 0 there for need to decrease the value by 1, to make up for the id=action-0
-    boxes=globalMenuItems*8;
+    boxes=lines*8;
   }
   
   function UpdateLevel(number)
