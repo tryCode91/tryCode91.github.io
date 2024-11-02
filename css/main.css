@@ -1,0 +1,111 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1; /* Makes the container take available space */
+    height: 100vh;
+}
+
+footer
+{
+    background-color: #f8f9fa; /* Optional: Light background for footer */
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.Box
+{
+    width: 100px;
+    height: 100px;
+    color: red;
+    border: 2px solid black;
+    margin-top:10px;
+    border-radius: 25px;
+}
+
+.Box:hover
+{
+    background-color: blue;
+    cursor: pointer;
+}
+
+.info
+{
+    font-size: 18px;
+}
+
+.query
+{
+    font-size: 18px;
+}
+
+.inactive-button {
+  pointer-events: none; /* Prevent clicks */
+  opacity: 0.5; /* Make it look disabled */
+}
+
+#retry
+{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.retry-area
+{
+    cursor: pointer;
+    margin-left: -2em !important;
+}
+
+.disable-click
+{
+    pointer-events: none;
+}
+
+.enable-click
+{
+    pointer-events: auto;
+}
+
+.level
+{
+    font-weight: normal;
+}
+
+.mr-auto
+{
+    margin-right: 0 !important;
+}
+
+.sidebar {
+    height: 100vh; /* Full height */
+    background-color: #f8f9fa; /* Light gray background */
+    padding-top: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: fixed; /* Fix the sidebar to the left */
+    left: 0; /* Align it to the left */
+    top: 0; /* Align it to the top */
+    width: 250px; /* Set a fixed width for the sidebar */
+    border-right: 1px solid #dee2e6; /* Optional: Add a border for aesthetics */
+    overflow-y: auto; /* Optional: Add scroll if content overflows */
+
+    /* Add flexbox */
+    display:flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+}
+
+.sidebar.active {
+    left: 0; /* Show sidebar */
+}
