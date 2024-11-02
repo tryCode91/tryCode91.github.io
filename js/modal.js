@@ -4,10 +4,13 @@ $(function() {
     
     // Show modal when name is has no value saved in localStorage
     let name =  localStorage.getItem("name");
-    
-    if ( name.length == 0)
+    if ( name == null)
     {
-        DisplayModal();
+        AskName();
+    }
+    else if ( name.length == 0 )
+    {
+        AskName();
     }
     else
     {
@@ -18,11 +21,11 @@ $(function() {
     // If user requested to change name
     $("#name").on("click", function()
     {
-        DisplayModal();
+        AskName();
 
     });
     
-    function DisplayModal()
+    function AskName()
     {
             
         // Variable to store the user's name
