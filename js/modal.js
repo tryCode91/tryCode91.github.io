@@ -78,4 +78,13 @@ $(function() {
         alert("Your on a device which is not supported!");
     } 
 
+    function isMobile() {
+        return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    if (isMobile()) {
+        alert("User is on a mobile device");
+    } else {
+        alert("User is on a desktop device");
+    }
 });
