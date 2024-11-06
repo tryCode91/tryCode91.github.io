@@ -9,8 +9,11 @@ $(function() {
     
     if (isMobile()) 
     {
-        alert("User is on a mobile device");
-        $('#content').load("new.html");
+        // Hide all elements
+        $("body > *").hide();
+        
+        // Show the specific div
+        $("#mobile").show();
     } 
     else
     {
