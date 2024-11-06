@@ -6,85 +6,84 @@ $(function() {
 
     // Show modal when name is has no value saved in localStorage
     let name =  localStorage.getItem("name");
-
-    if ( name == null)
+    
+    if (isMobile()) 
     {
-        AskName();
-    }
-    else if ( name.length == 0 )
-    {
-        AskName();
-    }
+        alert("User is on a mobile device");
+        $('#content').load("new.html");
+    } 
     else
     {
 
-        // Set initial highscore
-        SetHighscore(0, 0, lines);
-    }
-
-    // If user requested to change name
-    $("#change-name").on("click", function()
-    {
-        AskName();
-
-    });
-    
-    function AskName()
-    {
-            
-        // Variable to store the user's name
-        let userName = "";
-
-        // Show the modal when the page loads
-        $("#fullsizeModal").css("display", "flex");
-
-        // Close the modal when the close button is clicked
-        $("#closeModal").click(function() 
+        if ( name == null)
         {
-            $("#fullsizeModal").hide();
-        });
+            AskName();
+        }
+        else if ( name.length == 0 )
+        {
+            AskName();
+        }
+        else
+        {
 
-        // Save the name input value and close the modal
-        $("#submitName").click(function() 
-        {    
-            userName = $("#nameInput").val();
-            
-            if (userName.length >= 20)
-            {
-                alert("Name can max be 20 characters long")
-                $("#nameInput").val("");
-            }
-            else if (userName)
+            // Set initial highscore
+            SetHighscore(0, 0, lines);
+        }
+
+        // If user requested to change name
+        $("#change-name").on("click", function()
+        {
+            AskName();
+
+        });
+        
+        function AskName()
+        {
+                
+            // Variable to store the user's name
+            let userName = "";
+
+            // Show the modal when the page loads
+            $("#fullsizeModal").css("display", "flex");
+
+            // Close the modal when the close button is clicked
+            $("#closeModal").click(function() 
             {
                 $("#fullsizeModal").hide();
+            });
 
-                // Store name in localstorage
-                localStorage.setItem("name", userName);
+            // Save the name input value and close the modal
+            $("#submitName").click(function() 
+            {    
+                userName = $("#nameInput").val();
+                
+                if (userName.length >= 20)
+                {
+                    alert("Name can max be 20 characters long")
+                    $("#nameInput").val("");
+                }
+                else if (userName)
+                {
+                    $("#fullsizeModal").hide();
 
-                // Set initial highscore
-                SetHighscore(0, 0, lines);
+                    // Store name in localstorage
+                    localStorage.setItem("name", userName);
 
-            }
-            else
-            {
-                alert("Please enter your name.");
-            }
-        });
+                    // Set initial highscore
+                    SetHighscore(0, 0, lines);
+
+                }
+                else
+                {
+                    alert("Please enter your name.");
+                }
+            });
+        }
+    
     }
-
-
-    if (navigator.userAgent.match(/iPhone/i)   || navigator.userAgent.match(/iPad/i)  || navigator.userAgent.match(/Android/i)) {     
-        // Code to execute if device is mobile 
-        alert("Your on a device which is not supported!");
-    } 
 
     function isMobile() {
         return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
-    if (isMobile()) {
-        alert("User is on a mobile device");
-    } else {
-        alert("User is on a desktop device");
-    }
 });
