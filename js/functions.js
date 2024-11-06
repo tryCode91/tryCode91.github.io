@@ -1,38 +1,54 @@
 // Import the function from utils.js
 import { SetHighscore } from './highscore.js';
+import { 
+  UpdateLines,
+  UpdateBoolean,
+  UpdateNumber,
+  UpdateBoxes
+} from './helpers.js';
 
 $(function() {
   
   // Global Variables
   let playerWon = false; // keep track of lose and win
-  let tick=4; // Start value for number of random boxes to guess
-  let maxLines = 5; // Number of lines of, boxes = maxLines * 8
+  let tick=1; // Start value for number of random boxes to guess
+  let maxLines=5; // Number of lines of, boxes = maxLines * 8
   let running=false;
   let animationFrameId; // Track the request ID to cancel it if needed
-  let lines=0;
+  let lines=new Array(0,0,0,0,0); // Inital record on each level
+  let randomBoxes = new Array();
+  let level=0;
   let boxes=0; // One line is 8 boxes
   let message="";
-  let randomBoxes = [];
-  let level=1;
+  let tempLevel=0;
+  let tempTick=0;
+  let currentLine=0; // Unneccesary to use two variables to keep track of one value
+  let startLine=0; // player selected line to start with
 
   $("#menuItems").attr("placeholder", "1 to " + maxLines);
   
   // Main Function
   $( "#createMenuItems" ).on( "click", function() {
 
-    var menuItems=$("#menuItems").val();
+    // Input
+    startLine=$("#menuItems").val();
 
-    UpdateMenuItems(menuItems);
+    // Update array holding values
+    lines=UpdateLines(startLine, level, lines);
+    
+    // Update boxes
+    boxes=UpdateBoxes(startLine);
 
-    if(ValidateInput())
+    if(ValidateInput(startLine))
     {
-
+      // Decrease the value of startLine by 1 becasuse the array starts from 0
+      
       // Show container
-      // Might put this into a function
       $("#menu-items").show();
       $("#message-container").hide();
 
-      UpdateRunning(true);
+      // Update running
+      running = UpdateBoolean(running, true);
       
       // Start the game
       StartGameLoop();
@@ -42,14 +58,14 @@ $(function() {
   });
   
   // Validate user input
-  function ValidateInput()
+  function ValidateInput(startLine)
   {
 
-    if( lines <= 0 )
+    if( startLine <= 0 )
     {
       message="Select a number that is larger than 0!"; 
     }
-    else if ( lines > maxLines )
+    else if ( startLine > maxLines )
     {
       message="Select a number that is smaller than or equal to " + maxLines + "!";
     }
@@ -70,8 +86,8 @@ $(function() {
     
     // Condition to check if boxes are equal to number of tick
     CompletedLine();
-
-    UpdateBoxes();
+    
+    boxes=UpdateBoxes(startLine);
 
     // 4 Sequences of animations running in Order, put all the four inside a function
     // 1. Create the boxes.
@@ -93,21 +109,32 @@ $(function() {
     WinOrLose();
 
   }
+
   function CompletedLine()
   {
-    console.log("Boxes " + boxes);
-    console.log("tick " + tick);  
-    
+    // Increment level by 1 if the next level is not the last level!
     if (boxes == tick)
     {
-      StopGameLoop();
-      UpdatePlayerWon(true);
-      tick++;
-      UpdateTick(tick);
-      level++;
-      UpdateLevel(level);
-      lines++;
-      UpdateLines(lines);
+      if( level < maxLines )
+      {
+        StopGameLoop();
+        playerWon=UpdateBoolean(playerWon, true);
+      
+        // Reset ticks
+        tempTick=1;
+        tick=UpdateNumber(tick, tempTick);
+        
+        tempLevel=level+1;
+        level=UpdateNumber(level, tempLevel);
+      
+        // increment current line
+        startLine++;
+        lines=UpdateLines(startLine, level, lines);
+      }
+      else
+      {
+        alert("You have reached the last level, bravo!");
+      }
     }
   }
 
@@ -121,8 +148,8 @@ $(function() {
       $("#retry").on("click", function() {
 
         // Reset tick 
-        UpdateTick(4);
-        UpdateLevel(1);
+        tick=UpdateNumber(tick, 1);
+        level=UpdateNumber(level, 1);
         
         // Stop Game Loop cleanly
         StopGameLoop();
@@ -139,7 +166,7 @@ $(function() {
     {
       fadeInAndOut();
       // Reset playerWon
-      UpdatePlayerWon(false);
+      UpdateBoolean(playerWon, false);
     }
 
   }
@@ -187,7 +214,11 @@ $(function() {
 
   function StartGameLoop()
   {
-    if(!running) UpdateRunning(true);
+    if(!running)
+    {
+      running=UpdateBoolean(running, true);
+    }
+
     GameLoop();
     console.log("Game Loop Started.");
   }
@@ -195,7 +226,7 @@ $(function() {
   function StopGameLoop()
   {
     $("#retry-container").hide();
-    UpdateRunning(false);  
+    UpdateBoolean(running, false);  
     cancelAnimationFrame(animationFrameId); // Cancel the current animation frame
     console.log("Game loop stopped.");
   }
@@ -270,26 +301,24 @@ $(function() {
     // Checking if every guess was correct
     if (numberOfGuesses == 1 && correctGuesses == tick)
     {
-      // Player won! // This will Run only ONCE per round
-      UpdatePlayerWon(true);
-      tick++;
-      UpdateTick(tick);
-      level++;
-      UpdateLevel(level);
-
-      // Add the current highscore
-      SetHighscore(level, lines);
-
-      // Request the next frame and store the ID
-      animationFrameId = requestAnimationFrame(GameLoop);
-      
+      NextLevel(); 
     } 
     else if ( numberOfGuesses == 1 && correctGuesses < tick )
     {
       // Make boxes temporarily untouchable so that we dont increment the tick
       FreezeBoxes();
+
+      DisplayRetryMessage()
+      
+      running=UpdateBoolean(running, false);
+
+    }
+
+  }
   
-      // Display message to user
+  function DisplayRetryMessage()
+  {
+    // Display message to user
       let html="<div class='text-secondary font-weight-bold'>No Guesses Left &nbsp;</div>";
       html+="<div class='btn btn-primary retry-area mt-2'>";
       html+="<div class='text-light font-weight-bold'>Try again</div>";
@@ -298,10 +327,6 @@ $(function() {
       // I want the pointer to be a cursor!
       $("#retry").html(html);
       $("#retry-container").show();
-
-      UpdateRunning(false);
-
-    }
 
   }
 
@@ -430,44 +455,6 @@ $(function() {
   
   }
 
-  function UpdateMenuItems(menuItems)
-  {
-      lines = menuItems;
-  }
-
-  // Update playerWon with a function because the global variable does not want to be updated ...
-  function UpdatePlayerWon(trueOrFalse)
-  {
-      playerWon=trueOrFalse
-  }
-
-  function UpdateTick(number)
-  {
-      tick=number
-  }
-
-  function UpdateRunning(trueOrFalse)
-  {
-      running=trueOrFalse;
-  }
-  
-  function UpdateLines(number)
-  {
-      lines=number;
-  }
-  
-  function UpdateBoxes()
-  {
-    // Boxes start at 0 there for need to decrease the value by 1, to make up for the id=action-0
-    boxes=lines*8;
-  }
-  
-  function UpdateLevel(number)
-  {
-    level=number;
-    $(".level").html(level);
-  }
-
   function FreezeBoxes()
   {
     // Temporarily make boxes untouchable
@@ -484,6 +471,29 @@ $(function() {
       $(".Box").removeClass("disable-click");
       $(".Box").addClass("enable-click");
     }, animationTime);
+  }
+
+  function NextLevel()
+  {
+
+      // Player won! // This will Run only ONCE per round
+      playerWon=UpdateBoolean(playerWon, true);
+      
+      tempTick=tick+1;
+      tick=UpdateNumber(tick, tempTick);
+
+      tempLevel=level+1;
+      level=UpdateNumber(level, tempLevel);
+      $(".level").html(level + 1);
+
+      // Update level
+      lines=UpdateLines(startLine, level, lines);
+      
+      // Add the current highscore
+      SetHighscore(startLine, level, lines);
+      
+      // Request the next frame and store the ID
+      animationFrameId = requestAnimationFrame(GameLoop);
   }
 
 });

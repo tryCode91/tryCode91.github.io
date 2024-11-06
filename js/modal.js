@@ -2,8 +2,11 @@ import { SetHighscore } from './highscore.js';
 
 $(function() {
     
+    let lines=new Array(0,0,0,0,0); // Inital record on each level 
+
     // Show modal when name is has no value saved in localStorage
     let name =  localStorage.getItem("name");
+
     if ( name == null)
     {
         AskName();
@@ -14,12 +17,13 @@ $(function() {
     }
     else
     {
+
         // Set initial highscore
-        SetHighscore(0, 0);
+        SetHighscore(0, 0, lines);
     }
 
     // If user requested to change name
-    $("#name").on("click", function()
+    $("#change-name").on("click", function()
     {
         AskName();
 
@@ -58,7 +62,7 @@ $(function() {
                 localStorage.setItem("name", userName);
 
                 // Set initial highscore
-                SetHighscore(0, 0);
+                SetHighscore(0, 0, lines);
 
             }
             else
@@ -68,5 +72,10 @@ $(function() {
         });
     }
 
+
+    if (navigator.userAgent.match(/iPhone/i)   || navigator.userAgent.match(/iPad/i)  || navigator.userAgent.match(/Android/i)) {     
+        // Code to execute if device is mobile 
+        alert("Your on a device which is not supported!");
+    } 
 
 });
