@@ -17,7 +17,7 @@
   </head>
   <body>
   
-  <!--  -->
+  <!-- Modal -->
   <div class="fullsize-modal" id="fullsizeModal">
     <div class="fullsize-modal-content">
       <span class="close-btn" id="closeModal">&times;</span>
@@ -30,7 +30,7 @@
   
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
-    
+
     <div class="row">
       <div class="col">
         <h1 class="underline" >Highscore</h1>
@@ -47,19 +47,23 @@
       </div>  
     </div>
 
-    <table class="table table-hover font-weight-bold">
-      <thead>
-      <tr>
-        <th scope="col">Line</th>
-        <th scope="col">1</th>
-        <th scope="col">2</th>
-        <th scope="col">3</th>
-        <th scope="col">4</th>
-        <th scope="col">5</th>
-      </tr>
-      </thead>
-      <tbody class="highscore"></tbody>
-    </table>  
+    <div class="row">
+      <div class="col">
+        <table class="table table-hover font-weight-bold">
+          <thead>
+          <tr>
+            <th scope="col">Line</th>
+            <th scope="col">1</th>
+            <th scope="col">2</th>
+            <th scope="col">3</th>
+            <th scope="col">4</th>
+            <th scope="col">5</th>
+          </tr>
+          </thead>
+          <tbody class="highscore"></tbody>
+        </table>  
+      </div>
+    </div>
     <hr />
     
     <!-- Change player name -->
@@ -77,7 +81,7 @@
       </div>
     </div>
 
-  </div>
+  </div> <!-- End sidebar -->
 
   <div class="container mt-5">
 
@@ -85,10 +89,11 @@
       <div class="col-9">
         <h1>Memory</h1>
       </div>
-      
       <!-- Level info -->
       <div class="col-3">
-        <div class="text-end font-weight-bold h1 text-primary">Level <span class="level text-dark">1</span></div>
+        <div class="text-end font-weight-bold h1 text-primary">
+          Level <span class="level text-dark">1</span>
+        </div>
       </div>
     </div>
     
@@ -105,11 +110,16 @@
       </div>
     </div>
 
-    <div>
-      <p><i class="info">One line of boxes is 8, 2 lines is 16 ... </i></p>
+    <div class="row">
+      <div class="col">
+        <p><i class="info">One line of boxes is 8, 2 lines is 16 ... </i></p>
+      </div>
     </div>
-    
-    <hr class="bg-dark"/>
+    <div class="row">
+      <div class="col">
+        <hr class="bg-dark"/>  
+      </div>
+    </div>
     
     <!-- Menu items -->
     <div class="row" id="menu-items"></div>
