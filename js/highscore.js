@@ -1,42 +1,39 @@
-export function SetHighscore(currentLine, level, lines)
+import { maxLines } from './functions.js';
+
+export function DisplayHighscore(lines)
 {
-    // Set name
-    let html="";
-    let name = localStorage.getItem("name");
-    $("#name").html(name);
     
     // Set lines and level
+    let html="";
     html="<tr>";
     html+="<td> Level </td>";
+    
+     // Set name can only happen inside of a relatively active function.
+    let name = localStorage.getItem("name");
+    $("#name").html(name);
 
-    console.log(currentLine);
-    currentLine = currentLine - 1;
-    // Add each level to table
-    for (let i = 0; i < lines.length; i++ )
-    {  
-        // When the current line have been found, add +1 to level 
-        if ( i === currentLine)
-        {
-            html+="<td>" + (lines[i] + 1) + "</td>";
-            console.log("What is being added " + (lines[i] + 1));
-            console.log("To what index " + i);
-            console.log("To what value " + lines[i]);
-        }
-        else
-        {   // Just display the numbers
-            html+="<td>" + lines[i] + "</td>";
-        }
+   // Add the current score to highscore
+    for (let i = 0; i < lines.length; i++)
+    {
+        html+="<td>" + lines[i] + "</td>";
     }
- 
-    html+="</tr>";
 
+    html+="</tr>";
 
     // Clear the old values and append new data
     $(".highscore").html("");
     $(".highscore").append(html);
 
+}
+
+export function SetNameAndSaveToStorage(lines, level)
+{
     // Save new highscore to localStorage
-    localStorage.setItem("lines", lines);
+    localStorage.setItem("lines", JSON.stringify(lines));
     localStorage.setItem("level", level);
 }
 
+export function ResetScore()
+{   
+    new Array(maxLines).fill(0);
+}

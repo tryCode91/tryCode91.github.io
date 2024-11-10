@@ -24,7 +24,8 @@
 
 .change-name
 {
-    margin-top: 450px !important
+    margin-top: 450px !important;
+    white-space: nowrap;
 }
 .custom-name
 {

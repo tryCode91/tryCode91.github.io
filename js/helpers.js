@@ -12,6 +12,7 @@ export function UpdateNumber(valueToUpdate, number)
 export function UpdateLines(index, level, lines)
 {   
     let array=lines;
+
     array[index] = level;
     return array;
 }

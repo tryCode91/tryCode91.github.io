@@ -1,10 +1,23 @@
-import { SetHighscore } from './highscore.js';
+import { DisplayHighscore } from './highscore.js';
+import { maxLines } from './functions.js';
 
 $(function() {
+    let lines;
+    // Check first that there is no record already
+    // If localStorage does not contain data about lines
+    if ( JSON.parse(localStorage.getItem("lines")) == null )
+    {
+        // Fill empty array with 0
+        lines=new Array(maxLines).fill(0);
+    }    
+    else
+    {
+        // If lines is NNot null then get the current record
+        lines=JSON.parse(localStorage.getItem("lines"));
+    }
     
-    let lines=new Array(0,0,0,0,0); // Inital record on each level 
-
-    // Show modal when name is has no value saved in localStorage
+    
+    // Show modal when name has no value saved in localStorage
     let name =  localStorage.getItem("name");
     
     if (isMobile()) 
@@ -17,8 +30,8 @@ $(function() {
     } 
     else
     {
-
-        if ( name == null)
+        // For Desktop and bigger screen resolution
+        if ( name == null )
         {
             AskName();
         }
@@ -30,7 +43,7 @@ $(function() {
         {
 
             // Set initial highscore
-            SetHighscore(0, 0, lines);
+            DisplayHighscore(lines);
         }
 
         // If user requested to change name
@@ -39,54 +52,55 @@ $(function() {
             AskName();
 
         });
-        
-        function AskName()
-        {
-                
-            // Variable to store the user's name
-            let userName = "";
-
-            // Show the modal when the page loads
-            $("#fullsizeModal").css("display", "flex");
-
-            // Close the modal when the close button is clicked
-            $("#closeModal").click(function() 
-            {
-                $("#fullsizeModal").hide();
-            });
-
-            // Save the name input value and close the modal
-            $("#submitName").click(function() 
-            {    
-                userName = $("#nameInput").val();
-                
-                if (userName.length >= 20)
-                {
-                    alert("Name can max be 20 characters long")
-                    $("#nameInput").val("");
-                }
-                else if (userName)
-                {
-                    $("#fullsizeModal").hide();
-
-                    // Store name in localstorage
-                    localStorage.setItem("name", userName);
-
-                    // Set initial highscore
-                    SetHighscore(0, 0, lines);
-
-                }
-                else
-                {
-                    alert("Please enter your name.");
-                }
-            });
-        }
     
     }
 
     function isMobile() {
         return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
+    
+    function AskName()
+    {
+            
+        // Variable to store the user's name
+        let userName = "";
 
+        // Show the modal when the page loads
+        $("#fullsizeModal").css("display", "flex");
+
+        // Close the modal when the close button is clicked
+        $("#closeModal").click(function() 
+        {
+            $("#fullsizeModal").hide();
+        });
+
+        // Save the name input value and close the modal
+        $("#submitName").click(function() 
+        {    
+            userName = $("#nameInput").val();
+            
+            if (userName.length >= 20)
+            {
+                alert("Name can max be 20 characters long")
+                $("#nameInput").val("");
+            }
+            else if (userName)
+            {
+                $("#fullsizeModal").hide();
+
+                // Store name in localstorage
+                localStorage.setItem("name", userName);
+
+                // Set initial highscore
+                DisplayHighscore(lines);
+
+                $("#name").html(userName);
+
+            }
+            else
+            {
+                alert("Please enter your name.");
+            }
+        });
+    }
 });

@@ -1,5 +1,10 @@
 // Import the function from utils.js
-import { SetHighscore } from './highscore.js';
+import { 
+  DisplayHighscore,
+  SetNameAndSaveToStorage,
+  ResetScore
+} from './highscore.js';
+
 import { 
   UpdateLines,
   UpdateBoolean,
@@ -7,12 +12,14 @@ import {
   UpdateBoxes
 } from './helpers.js';
 
+let maxLines=5; // Number of maximum lines, total boxes = maxLines * 8
+export { maxLines };
+
 $(function() {
   
   // Global Variables
   let playerWon = false; // keep track of lose and win
   let tick=1; // Start value for number of random boxes to guess
-  let maxLines=5; // Number of lines of, boxes = maxLines * 8
   let running=false;
   let animationFrameId; // Track the request ID to cancel it if needed
   let lines=new Array(0,0,0,0,0); // Inital record on each level
@@ -22,8 +29,7 @@ $(function() {
   let message="";
   let tempLevel=0;
   let tempTick=0;
-  let currentLine=0; // Unneccesary to use two variables to keep track of one value
-  let startLine=0; // player selected line to start with
+  let line=0; // player selected line to start with
 
   $("#menuItems").attr("placeholder", "1 to " + maxLines);
   
@@ -31,17 +37,17 @@ $(function() {
   $( "#createMenuItems" ).on( "click", function() {
 
     // Input
-    startLine=$("#menuItems").val();
+    line=$("#menuItems").val();
 
     // Update array holding values
-    lines=UpdateLines(startLine, level, lines);
+    lines=UpdateLines(line, level, lines);
     
     // Update boxes
-    boxes=UpdateBoxes(startLine);
+    boxes=UpdateBoxes(line);
 
-    if(ValidateInput(startLine))
+    if(ValidateInput(line))
     {
-      // Decrease the value of startLine by 1 becasuse the array starts from 0
+      // Decrease the value of line by 1 becasuse the array starts from 0
       
       // Show container
       $("#menu-items").show();
@@ -58,14 +64,14 @@ $(function() {
   });
   
   // Validate user input
-  function ValidateInput(startLine)
+  function ValidateInput(line)
   {
 
-    if( startLine <= 0 )
+    if( line <= 0 )
     {
       message="Select a number that is larger than 0!"; 
     }
-    else if ( startLine > maxLines )
+    else if ( line > maxLines )
     {
       message="Select a number that is smaller than or equal to " + maxLines + "!";
     }
@@ -87,7 +93,7 @@ $(function() {
     // Condition to check if boxes are equal to number of tick
     CompletedLine();
     
-    boxes=UpdateBoxes(startLine);
+    boxes=UpdateBoxes(line);
 
     // 4 Sequences of animations running in Order, put all the four inside a function
     // 1. Create the boxes.
@@ -128,8 +134,9 @@ $(function() {
         level=UpdateNumber(level, tempLevel);
       
         // increment current line
-        startLine++;
-        lines=UpdateLines(startLine, level, lines);
+        line++;
+        lines=UpdateLines(line, level, lines);
+        
       }
       else
       {
@@ -149,7 +156,7 @@ $(function() {
 
         // Reset tick 
         tick=UpdateNumber(tick, 1);
-        level=UpdateNumber(level, 1);
+        level=UpdateNumber(level, 0);
         
         // Stop Game Loop cleanly
         StopGameLoop();
@@ -220,7 +227,6 @@ $(function() {
     }
 
     GameLoop();
-    console.log("Game Loop Started.");
   }
 
   function StopGameLoop()
@@ -228,7 +234,6 @@ $(function() {
     $("#retry-container").hide();
     UpdateBoolean(running, false);  
     cancelAnimationFrame(animationFrameId); // Cancel the current animation frame
-    console.log("Game loop stopped.");
   }
   
   function CheckScore()
@@ -476,24 +481,40 @@ $(function() {
   function NextLevel()
   {
 
-      // Player won! // This will Run only ONCE per round
+      // Player won! Runs one time per round
       playerWon=UpdateBoolean(playerWon, true);
-      
+
+      // Increment tick - tick is number of boxes that will change background color
       tempTick=tick+1;
       tick=UpdateNumber(tick, tempTick);
-
       tempLevel=level+1;
       level=UpdateNumber(level, tempLevel);
-      $(".level").html(level + 1);
+      // Increment display level
+      $(".level").html(tempLevel + 1);
 
-      // Update level
-      lines=UpdateLines(startLine, level, lines);
+      // UpdateLines Is going to take argument a array holding level on each line from 1 to 5.
+      // LINES 1 2 3 4 5
+      // LEVEL 0 0 0 0 0
+      // Line - 1, lines start at index 0
+      lines=UpdateLines((line - 1), level, lines);
+      
+      console.log("Array " + lines);
+      console.log("Level " + level);
+      console.log("Line " + line);
+      
+      // Sets the current name and save lines + level to localstorage
+      SetNameAndSaveToStorage(lines, level);
       
       // Add the current highscore
-      SetHighscore(startLine, level, lines);
+      DisplayHighscore(lines);
       
       // Request the next frame and store the ID
       animationFrameId = requestAnimationFrame(GameLoop);
   }
 
+  // Add click event to reset score btn
+  $("#reset-score").on("click", function(){
+    ResetScore();
+  });
+  
 });
