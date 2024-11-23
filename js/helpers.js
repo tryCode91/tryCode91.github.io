@@ -1,3 +1,5 @@
+import { maxLines } from "./functions";
+
 // Update playerWon with a function because the global variable does not want to be updated ...
 export function UpdateBoolean(valueToUpdate, boolean)
 {
@@ -22,3 +24,8 @@ export function UpdateBoxes(number)
     return number*8;
 }
 
+export function ResetScore()
+{
+    let reset=new Array().fill(maxLines);
+    UpdateLines(0, 0, reset);
+}

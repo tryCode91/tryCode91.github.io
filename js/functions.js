@@ -118,30 +118,33 @@ $(function() {
 
   function CompletedLine()
   {
-    // Increment level by 1 if the next level is not the last level!
+    // This function checks if the number of boxes equal to number of animations/ticks.
+    // If they do equal to each other then reset level and tick to 1 and increment the current line by 1
     if (boxes == tick)
     {
-      if( level < maxLines )
+
+      // I would need to check if the last line which is maxLines has been reached
+      if( line != maxLines )
       {
+
         StopGameLoop();
         playerWon=UpdateBoolean(playerWon, true);
-      
-        // Reset ticks
-        tempTick=1;
-        tick=UpdateNumber(tick, tempTick);
-        
-        tempLevel=level+1;
-        level=UpdateNumber(level, tempLevel);
+
+        // Reset ticks and level
+        tick=UpdateNumber(tick, 1);
+        level=UpdateNumber(level, 1);
       
         // increment current line
         line++;
         lines=UpdateLines(line, level, lines);
+        console.log("When do we get here? level < maxLines");
         
       }
       else
       {
-        alert("You have reached the last level, bravo!");
+        alert("Last line reached! Congrats");
       }
+
     }
   }
 
@@ -487,20 +490,18 @@ $(function() {
       // Increment tick - tick is number of boxes that will change background color
       tempTick=tick+1;
       tick=UpdateNumber(tick, tempTick);
+
       tempLevel=level+1;
       level=UpdateNumber(level, tempLevel);
+      
       // Increment display level
       $(".level").html(tempLevel + 1);
 
-      // UpdateLines Is going to take argument a array holding level on each line from 1 to 5.
+      // UpdateLines Is going to take argument array holding level on each line from 1 to 5.
       // LINES 1 2 3 4 5
       // LEVEL 0 0 0 0 0
       // Line - 1, lines start at index 0
       lines=UpdateLines((line - 1), level, lines);
-      
-      console.log("Array " + lines);
-      console.log("Level " + level);
-      console.log("Line " + line);
       
       // Sets the current name and save lines + level to localstorage
       SetNameAndSaveToStorage(lines, level);
