@@ -1,9 +1,9 @@
-// Import the function from utils.js
+// Import the functions
 import { 
   DisplayHighscore,
   SetNameAndSaveToStorage,
   ResetScore
-} from './highscore.js';
+} from './score.js';
 
 import { 
   UpdateLines,
@@ -12,12 +12,17 @@ import {
   UpdateBoxes
 } from './helpers.js';
 
+import 
+{
+  CreateMenuItems,
+} from './animation.js';
+
 let maxLines=5; // Number of maximum lines, total boxes = maxLines * 8
 export { maxLines };
 
 $(function() {
   
-  // Global Variables
+  // Globals
   let playerWon = false; // keep track of lose and win
   let tick=1; // Start value for number of random boxes to guess
   let running=false;
@@ -97,7 +102,7 @@ $(function() {
 
     // 4 Sequences of animations running in Order, put all the four inside a function
     // 1. Create the boxes.
-    CreateMenuItems();
+    CreateMenuItems(boxes);
     
     // 2. Random 4 Numbers and assign them to the boxes
     PickRandomBoxes();
@@ -442,27 +447,6 @@ $(function() {
     
   }
   
-  function CreateMenuItems()
-  {
-
-    var parent=$("#menu-items");
-    var parentMax=boxes;
-    var children="";
-    
-    // Clear out old data
-    parent.html("");
-
-    for ( let i = 0; i < parentMax; i++ )  
-    {
-      children+="<div class='col'>";
-      children+="<div class='Box' id='action-" + i + "'></div>";
-      children+="</div>";
-    }
-
-    $(children).appendTo(parent);
-  
-  }
-
   function FreezeBoxes()
   {
     // Temporarily make boxes untouchable
@@ -495,7 +479,7 @@ $(function() {
       level=UpdateNumber(level, tempLevel);
       
       // Increment display level
-      $(".level").html(tempLevel + 1);
+      $(".level").html(tempLevel++);
 
       // UpdateLines Is going to take argument array holding level on each line from 1 to 5.
       // LINES 1 2 3 4 5
@@ -515,7 +499,13 @@ $(function() {
 
   // Add click event to reset score btn
   $("#reset-score").on("click", function(){
-    ResetScore();
+
+    let resultObject = ResetScore(lines, level, line, tick);
+    lines=resultObject.lines;
+    level=resultObject.level;
+    line=resultObject.line;
+    tick=resultObject.tick;
+    
   });
   
 });

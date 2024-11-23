@@ -1,4 +1,4 @@
-import { DisplayHighscore } from './highscore.js';
+import { DisplayHighscore } from './score.js';
 import { maxLines } from './functions.js';
 
 $(function() {
