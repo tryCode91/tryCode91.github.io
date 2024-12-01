@@ -1,25 +1,13 @@
+import { GetNonString } from './helpers.js';
 import { DisplayHighscore } from './score.js';
-import { maxLines } from './functions.js';
 
 $(function() {
-    let lines;
-    // Check first that there is no record already
-    // If localStorage does not contain data about lines
-    if ( JSON.parse(localStorage.getItem("lines")) == null )
-    {
-        // Fill empty array with 0
-        lines=new Array(maxLines).fill(0);
-    }    
-    else
-    {
-        // If lines is NNot null then get the current record
-        lines=JSON.parse(localStorage.getItem("lines"));
-    }
-    
-    
+
     // Show modal when name has no value saved in localStorage
-    let name =  localStorage.getItem("name");
+    let name=localStorage.getItem("name");
+    let lines=GetNonString("lines");
     
+    // Hide everything for mobile phones! 
     if (isMobile()) 
     {
         // Hide all elements
@@ -41,13 +29,12 @@ $(function() {
         }
         else
         {
-
             // Set initial highscore
             DisplayHighscore(lines);
         }
 
         // If user requested to change name
-        $("#change-name").on("click", function()
+        $("#change-name-btn").on("click", function()
         {
             AskName();
 

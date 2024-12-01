@@ -1,38 +1,10 @@
-.sidebar {
-    height: 100vh; /* Full height */
-    background-color: #f8f9fa; /* Light gray background */
-    padding-top: 50px;
-    padding-left: 0px;
-    padding-right:  0px;
-    position: fixed; /* Fix the sidebar to the left */
-    left: 0; /* Align it to the left */
-    top: 0; /* Align it to the top */
-    width: 300px; /* Set a fixed width for the sidebar */
-    border-right: 1px solid #dee2e6; /* Optional: Add a border for aesthetics */
-    overflow-y: auto; /* Optional: Add scroll if content overflows */
-
-    /* Add flexbox */
-    display:flex;
-    justify-content: start;
-    align-items: center;
-    flex-direction: column;
-}
-
-.sidebar.active {
-    left: 0; /* Show sidebar */
-}
-
-.change-name
-{
-    margin-top: 450px !important;
-    white-space: nowrap;
-}
 .custom-name
 {
     margin-left:12px !important;
 }
 
-.underline
+.creator
 {
-    text-decoration: underline;
+    margin-top:610px;
+    margin-left: 30px;
 }

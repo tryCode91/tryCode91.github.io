@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,161 +13,152 @@
     <link rel="stylesheet" href="css/sidebar.css">
     <title>World Wide Web - Nginx</title>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
-  </head>
-  <body>
+</head>
+<body>
   
-  <!-- Modal -->
-  <div class="fullsize-modal" id="fullsizeModal">
+<!-- Modal -->
+<div class="fullsize-modal" id="fullsizeModal">
     <div class="fullsize-modal-content">
-      <span class="close-btn" id="closeModal">&times;</span>
-      <h1>Welcome!</h1>
-      <p>Please enter your name:</p>
-      <input type="text" id="nameInput" class="form-control input-field" placeholder="Your Name">
-      <button class="btn btn-primary mt-3" id="submitName">Submit</button>
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h1>Welcome!</h1>
+        <p>Please enter your name:</p>
+        <input type="text" id="nameInput" class="form-control input-field" placeholder="Your Name">
+        <button class="btn btn-primary mt-3" id="submitName">Submit</button>
     </div>
-  </div>
+</div>
   
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+               
+                <!-- HIGHSCORE -->
+                <div class="row py-1 px-4">
+                    
+                    <div class="row">
+                        <div class="col">
+                            <h1 class="underline">Highscore</h1>
+                        </div>
+                    </div>
+                    <div class="row mt-3 text-start font-weight-bold">
+                        <div class="col-5">
+                            <div class="mb-2 custom-name">Name </div>
+                        </div>
+                        <div class="col-7">
+                            <span id="name" class="text-primary text-right"></span>
+                        </div>  
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table table-hover font-weight-bold text-light">
+                            <thead>
+                            <tr>
+                                <th scope="col">Line</th>
+                                <th scope="col">1</th>
+                                <th scope="col">2</th>
+                                <th scope="col">3</th>
+                                <th scope="col">4</th>
+                                <th scope="col">5</th>
+                            </tr>
+                            </thead>
+                            <tbody class="highscore"></tbody>
+                            </table>  
+                        </div>
+                    </div>
+                    <hr />
+                    <!-- Change player name -->
+                    <div class="row text-nowrap">
+                        <div class="col-5">
+                            <div class="btn btn-sm btn-primary-outline bg-dark border rounded-1 custom-btn" id="change-name-btn">
+                            <div class="text-light font-weight-bold">Change name</div>
+                            </div>
+                        </div>
+                        <!-- Reset score -->
+                        <div class="col-5">
+                            <div class="btn btn-sm btn-primary-outline bg-dark border rounded-1 custom-btn" id="reset-score">
+                            <div class="text-light font-weight-bold">Reset Score</div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <span></span>
+                        </div>
+                    </div>
 
-    <div class="row">
-      <div class="col">
-        <h1 class="underline" >Highscore</h1>
-      </div>
-    </div>
-    
-    <!-- Highscore -->  
-    <div class="row mt-3 text-start font-weight-bold border-top ">
-      <div class="col-5">
-        <div class="mb-2 custom-name">Name </div>
-      </div>
-      <div class="col-7">
-        <span id="name" class="text-primary text-right"></span>
-      </div>  
-    </div>
+                    <div class="text-light fst-italic creator"><i>&copy; Petrus & Rouselle, inc </i></div>
 
-    <div class="row">
-      <div class="col">
-        <table class="table table-hover font-weight-bold">
-          <thead>
-          <tr>
-            <th scope="col">Line</th>
-            <th scope="col">1</th>
-            <th scope="col">2</th>
-            <th scope="col">3</th>
-            <th scope="col">4</th>
-            <th scope="col">5</th>
-          </tr>
-          </thead>
-          <tbody class="highscore"></tbody>
-        </table>  
-      </div>
-    </div>
-    <hr />
-    
-    <!-- Change player name -->
-    <div class="row ms-auto mt-auto mb-0 change-name">
-      <div class="col">
-        <div class="btn btn-primary-outline bg-dark border rounded-1 custom-btn" id="change-name">
-          <div class="text-light font-weight-bold">Change name</div>
+                </div> <!--End sidebar-->
+            </div>
         </div>
-      </div>
-      <!-- Reset score -->
-      <div class="col">
-        <div class="btn btn-primary-outline bg-dark border rounded-1 custom-btn" id="reset-score">
-          <div class="text-light font-weight-bold">Reset Score</div>
-        </div>
-      </div>
+
+        <!-- MAIN CONTENT/MEMORY GAME -->
+        <div class="col py-3">
+          <div class="row">
+            <div class="col-9">
+                <h1>Memory</h1>
+            </div>
+            <!-- Level info -->
+            <div class="col-3">
+                <div class="text-end font-weight-bold h1 text-primary">
+                Level <span class="level text-dark">1</span>
+                </div>
+            </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-5">
+                    <p class="query">How many Boxes would you like to create?</p>
+                </div>
+
+                <div class="col-5 input-group mb-1">
+                    <input type="number" class="form-control" id="menuItems" placeholder="Boxes" aria-label="Neither" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button id="createMenuItems" class="btn btn-outline-secondary" type="button">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <p><i class="info">One line of boxes is 8, 2 lines is 16 ... </i></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <hr class="bg-dark"/>  
+                </div>
+            </div>
+            
+            <!-- Render boxes -->
+            <div class="row" id="menu-items"></div>
+ 
+            <!-- Error message -->
+            <div class="row mt-4" id="message-container" style="display: none;">
+                <div class="col alert alert-danger" id="message">
+                </div>
+            </div>
+
+            <!-- Success message -->
+            <div class="row mt-4" id="won-container" style="display: none;">
+                <div class="col alert alert-success" id="won">
+                </div>
+            </div>
+
+            <!-- Retry message -->
+            <div class="row mt-4" id="retry-container" style="display: none;">
+                <div class="col-6 mx-auto" id="retry">
+                </div>
+            </div>
+        </div> <!-- END MAIN CONTENT -->
     </div>
+</div>
 
-  </div> <!-- End sidebar -->
+<!-- Include scripts -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="module" src="js/functions.js"></script>
+<script type="module" src="js/score.js"></script> <!-- Load the helper functions first-->
+<script type="module" src="js/modal.js"></script>
 
-  <div class="container mt-5">
-
-    <div class="row">
-      <div class="col-9">
-        <h1>Memory</h1>
-      </div>
-      <!-- Level info -->
-      <div class="col-3">
-        <div class="text-end font-weight-bold h1 text-primary">
-          Level <span class="level text-dark">1</span>
-        </div>
-      </div>
-    </div>
-    
-    <div class="row mt-3">
-      <div class="col-5">
-        <p class="query">How many Boxes would you like to create?</p>
-      </div>
-
-      <div class="col-5 input-group mb-1">
-        <input type="number" class="form-control" id="menuItems" placeholder="Boxes" aria-label="Neither" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-          <button id="createMenuItems" class="btn btn-outline-secondary" type="button">Send</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <p><i class="info">One line of boxes is 8, 2 lines is 16 ... </i></p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <hr class="bg-dark"/>  
-      </div>
-    </div>
-    
-    <!-- Render boxes -->
-    <div class="row" id="menu-items"></div>
-
-    <!-- Error message -->
-    <div class="row mt-4" id="message-container" style="display: none;">
-      <div class="col alert alert-danger" id="message">
-      </div>
-    </div>
-
-    <!-- Success message -->
-    <div class="row mt-4" id="won-container" style="display: none;">
-      <div class="col alert alert-success" id="won">
-      </div>
-    </div>
-
-    <!-- Retry message -->
-    <div class="row mt-4" id="retry-container" style="display: none;">
-      <div class="col-6 mx-auto" id="retry">
-      </div>
-    </div>
-
-  </div> <!-- End Container -->   
-  
-  <!-- This will show if to users on mobile/tablets -->
-  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <p class="col-md-4 mb-0 text-body-secondary">&copy; 2024 Petrus & Rouselle , inc</p>
-
-    <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-    </a>
-
-    <ul class="nav col-md-4 justify-content-end">
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Features</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Pricing</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
-    </ul>
-  </footer>
-
-  <!-- Include scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script type="module" src="js/functions.js"></script>
-  <script type="module" src="js/score.js"></script> <!-- Load the helper functions first-->
-  <script type="module" src="js/animation.js"></script>
-  <script type="module" src="js/modal.js"></script>
 </body>
 </html>

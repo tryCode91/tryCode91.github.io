@@ -1,40 +1,49 @@
 // Import the functions
 import { 
-  DisplayHighscore,
-  SetNameAndSaveToStorage,
-  ResetScore
-} from './score.js';
+  ResetScore,
+  DisplayHighscore
+} from "./score.js";
 
 import { 
   UpdateLines,
-  UpdateBoolean,
-  UpdateNumber,
+  StoreNonString,
+  GetNonString,
+  StoreString,
+  FadeInAndOut,
   UpdateBoxes
-} from './helpers.js';
+} from "./helpers.js";
 
-import 
-{
-  CreateMenuItems,
-} from './animation.js';
+import { 
+  CreateMenuItems, 
+  HideBackgroundColor, 
+  PickRandomBoxes, 
+  RemoveBackgroundColor,
+  DisplayRetryMessage
+} from "./animation.js";
 
-let maxLines=5; // Number of maximum lines, total boxes = maxLines * 8
+import { 
+  CompletedLine,
+  HighlightGuess
+} from "./game-logic.js";
+
+let maxLines=5; StoreNonString("maxLines", maxLines);// Number of maximum lines, total boxes = maxLines * 8
 export { maxLines };
 
 $(function() {
   
   // Globals
-  let playerWon = false; // keep track of lose and win
-  let tick=1; // Start value for number of random boxes to guess
-  let running=false;
-  let animationFrameId; // Track the request ID to cancel it if needed
-  let lines=new Array(0,0,0,0,0); // Inital record on each level
-  let randomBoxes = new Array();
-  let level=0;
-  let boxes=0; // One line is 8 boxes
-  let message="";
-  let tempLevel=0;
-  let tempTick=0;
-  let line=0; // player selected line to start with
+  let playerWon = false; StoreNonString("playerWon", playerWon); // keep track of lose and win
+  let tick=1; StoreNonString("tick", tick); // Start value for number of random boxes to guess
+  let lines=new Array(0,0,0,0,0); StoreNonString("lines", lines); // Inital record on each level
+  let running=false; StoreNonString("running", running); // is the game in progress?
+  let animationFrameId=0; StoreNonString("animationFrameId", animationFrameId); // Track the request ID to cancel it if needed
+  let randomBoxes = new Array(); StoreNonString("randomBoxes", randomBoxes); // randoms 4 numbers (boxes)
+  let level=0; StoreNonString("level", level); // track the current level
+  let boxes=0; StoreNonString("boxes", boxes); // One line is 8 boxes
+  let message=""; StoreString("message", message);
+  let line=0; StoreNonString("line", line); // player selected line to start with
+  let currentHighscore=0; StoreNonString("currentHighscore", currentHighscore);
+  let lastHighscore=0; StoreNonString("lastHighscore", lastHighscore);
 
   $("#menuItems").attr("placeholder", "1 to " + maxLines);
   
@@ -42,36 +51,202 @@ $(function() {
   $( "#createMenuItems" ).on( "click", function() {
 
     // Input
-    line=$("#menuItems").val();
-
-    // Update array holding values
-    lines=UpdateLines(line, level, lines);
+    StoreNonString("line", $("#menuItems").val());
     
     // Update boxes
-    boxes=UpdateBoxes(line);
-
-    if(ValidateInput(line))
+    UpdateBoxes();
+    
+    // Update array keeping score
+    UpdateLines();
+    
+    if(ValidateInput())
     {
-      // Decrease the value of line by 1 becasuse the array starts from 0
+      // Decrease the value of line by 1, array starts from 0
       
       // Show container
       $("#menu-items").show();
       $("#message-container").hide();
 
       // Update running
-      running = UpdateBoolean(running, true);
-      
+      StoreNonString("running", true);
+
       // Start the game
       StartGameLoop();
 
     }
       
   });
+
+  function GameLoop() {
+
+    if (!GetNonString("running")) return;
+    
+    line=GetNonString("line");
+    tick=GetNonString("tick");
+    boxes=GetNonString("boxes");
+    
+    randomBoxes=GetNonString("randomBoxes");
+    console.log("Randoms " + randomBoxes);
+
+    // Condition to check if boxes are equal to number of tick
+    CompletedLine();
+    
+    // 1. Create the boxes.
+    CreateMenuItems(boxes);
+
+    // 2. Random 4 Numbers and assign them to the boxes
+    PickRandomBoxes(boxes, tick);
+    
+    // 3. Clear all set of boxes.
+    HideBackgroundColor();
+
+    // 4. Wait for the first function to finish then remove background color. Function also runs the animation 
+    RemoveBackgroundColor();
+
+    // Check win condition
+    CheckScore(randomBoxes, boxes, tick);
+
+    // Check based on playerWon and running
+    WinOrLose();
+
+  }
+
+  function StartGameLoop()
+  {
+      if(!GetNonString("running"))
+      {
+          StoreNonString("running", true);
+      }
+      GameLoop();
+  }
   
-  // Validate user input
-  function ValidateInput(line)
+  function StopGameLoop()
+  {
+      $("#retry-container").hide();
+      StoreNonString("running", false);
+      let animationFrameId=GetNonString("animationFrameId");
+      cancelAnimationFrame(animationFrameId); // Cancel the current animation frame
+  }
+
+  function WinOrLose()
   {
 
+    let playerWon=GetNonString("playerWon");
+    let running=GetNonString("running");
+
+    // If player lose
+    if(!playerWon && running)
+    {
+        // User choose to RESTART
+        $("#retry").on("click", function() {
+            // Reset tick 
+            StoreNonString("tick", 1);
+            StoreNonString("level", 0);
+            
+            // Stop Game Loop cleanly
+            StopGameLoop();
+                
+            // Run game loop
+            StartGameLoop();
+        });
+    }
+
+    // User won, update tick value +1 and run game loop
+    if(playerWon)
+    {
+        FadeInAndOut();
+        // Reset playerWon
+        StoreNonString("playerWon", false);
+    }
+  }
+  
+  function NextLevel()
+  {
+    // Player won! Runs one time per round
+    StoreNonString("playerWon", true);
+
+    // Get tick, Tick is the number of boxes that will change background color
+    let tick=GetNonString("tick");
+    let incrementTick=tick+1;
+    StoreNonString("tick", incrementTick);
+
+    // Increment level and store it
+    let level=GetNonString("level");
+    let incrementLevel=level+1;
+    StoreNonString("level", incrementLevel)
+    
+    // Update Score
+    UpdateLines();
+
+    // Show display level
+    $(".level").html(level+1);
+
+    // Add the current highscore
+    DisplayHighscore();
+    
+    // Get current animation frame
+    let animationFrameId = GetNonString("animationFrameId");
+
+    // Request the next frame and store the ID
+    animationFrameId = requestAnimationFrame(GameLoop);
+    StoreNonString("animationFrameId", animationFrameId);
+    
+  } 
+
+  function CheckWinConditions(numberOfGuesses, correctGuesses, tick)
+  {
+
+    // Checking if every guess was correct
+    if (numberOfGuesses == 1 && correctGuesses == tick)
+    {
+        NextLevel(); 
+    } 
+    else if ( numberOfGuesses == 1 && correctGuesses < tick )
+    {
+        // Make boxes temporarily untouchable so that we dont increment the tick
+        $(".Box").addClass("inactive-button"); 
+
+        DisplayRetryMessage()
+       
+        StoreNonString("running", false);
+    }
+  }
+
+  function CheckScore()
+  { 
+    let randomBoxes=GetNonString("randomBoxes");
+    let boxes=GetNonString("boxes");
+    let tick=GetNonString("tick");
+    let numberOfGuesses=randomBoxes.length; // Number of times user can guess
+    let correctGuesses=0;
+    let guess=randomBoxes; // Assign a temporary array to the numbers
+
+    // Register a click event for every box
+    for (let i = 0; i < boxes; i++) {
+
+        // When a Box is selected, check if the current index is same as any value of randomBoxes[i]
+        $("#action-" + i).on("click", function() {
+
+            // Register the selected boxes and correct guesses and change background 
+            correctGuesses=HighlightGuess(correctGuesses, guess, i);
+
+            // Checks when all the guesses have been made and if all the guesses was correct
+            CheckWinConditions(numberOfGuesses, correctGuesses, tick)
+            
+            // Decrease the guess counter for EVERY guess
+            numberOfGuesses--;
+
+        });
+    }
+  }
+
+  // Validate user input
+  function ValidateInput()
+  {
+    
+    let line=GetNonString("line");
+    let maxLines=GetNonString("maxLines");
+    
     if( line <= 0 )
     {
       message="Select a number that is larger than 0!"; 
@@ -91,421 +266,9 @@ $(function() {
 
   }
 
-  function GameLoop() {
-    
-    if (!running) return;
-    
-    // Condition to check if boxes are equal to number of tick
-    CompletedLine();
-    
-    boxes=UpdateBoxes(line);
-
-    // 4 Sequences of animations running in Order, put all the four inside a function
-    // 1. Create the boxes.
-    CreateMenuItems(boxes);
-    
-    // 2. Random 4 Numbers and assign them to the boxes
-    PickRandomBoxes();
-    
-    // 3. Clear all set of boxes.
-    HideBackgroundColor();
-   
-    // 4. Wait for the first function to finish then remove background color. Function also runs the animation 
-    RemoveBackgroundColor();
-    
-    // Check win condition
-    CheckScore();
-
-    // Check based on playerWon and running
-    WinOrLose();
-
-  }
-
-  function CompletedLine()
-  {
-    // This function checks if the number of boxes equal to number of animations/ticks.
-    // If they do equal to each other then reset level and tick to 1 and increment the current line by 1
-    if (boxes == tick)
-    {
-
-      // I would need to check if the last line which is maxLines has been reached
-      if( line != maxLines )
-      {
-
-        StopGameLoop();
-        playerWon=UpdateBoolean(playerWon, true);
-
-        // Reset ticks and level
-        tick=UpdateNumber(tick, 1);
-        level=UpdateNumber(level, 1);
-      
-        // increment current line
-        line++;
-        lines=UpdateLines(line, level, lines);
-        console.log("When do we get here? level < maxLines");
-        
-      }
-      else
-      {
-        alert("Last line reached! Congrats");
-      }
-
-    }
-  }
-
-  function WinOrLose()
-  {
-    // If user lost
-    if(!playerWon && running)
-    {
-      
-      // User choose to RESTART
-      $("#retry").on("click", function() {
-
-        // Reset tick 
-        tick=UpdateNumber(tick, 1);
-        level=UpdateNumber(level, 0);
-        
-        // Stop Game Loop cleanly
-        StopGameLoop();
-          
-        // Run game loop
-        StartGameLoop();
-
-      });
-
-    }
-
-    // User won, update tick value +1 and run game loop
-    if(playerWon)
-    {
-      fadeInAndOut();
-      // Reset playerWon
-      UpdateBoolean(playerWon, false);
-    }
-
-  }
-
-  // Function to wrap fadeIn in a Promise
-  function fadeIn(element, duration) 
-  {
-    return new Promise((resolve) => 
-    {
-      $(element).fadeIn(duration, function() 
-      {
-        resolve(); // Resolve the promise when fadeIn is complete
-      });
-    });
-  }
-
-  // Function to wrap fadeOut in a Promise
-  function fadeOut(element, duration) 
-  {
-    return new Promise((resolve) => 
-    {
-      $(element).fadeOut(duration, function() 
-      {
-        resolve(); // Resolve the promise when fadeOut is complete
-      });
-    });
-  }
-
-  // Function to create a delay using a Promise
-  function sleep(duration)
-  {
-    return new Promise((resolve) => setTimeout(resolve, duration));
-  }
-
-  // Async function to perform fade-in, wait, and then fade-out
-  async function fadeInAndOut() {
-
-    $("#won").html("You Won and now advance to the next level!");
-    const element = "#won-container";
-    await fadeIn(element, 1000); // Wait for fade-in to complete (1 second)
-    await sleep(2000);           // Wait for 2 seconds
-    await fadeOut(element, 1000); // Wait for fade-out to complete (1 second)
-
-  }
-
-  function StartGameLoop()
-  {
-    if(!running)
-    {
-      running=UpdateBoolean(running, true);
-    }
-
-    GameLoop();
-  }
-
-  function StopGameLoop()
-  {
-    $("#retry-container").hide();
-    UpdateBoolean(running, false);  
-    cancelAnimationFrame(animationFrameId); // Cancel the current animation frame
-  }
-  
-  function CheckScore()
-  { 
-    
-    let numberOfGuesses=randomBoxes.length; // Number of times user can guess
-    let correctGuesses=0;
-    let guess = randomBoxes; // Assign a temporary array the numbers
-
-    // Register a click event for every box
-    for (let i = 0; i < boxes; i++) {
-
-      // When a Box is selected, check if the current index is same as any value of randomBoxes[i]
-      $("#action-" + i).on("click", function() {
-
-        // Register the selected boxes and correct guesses and change background 
-        correctGuesses=HighlightGuess(correctGuesses, guess, i);
-
-        // Checks when all the guesses have been made and if all the guesses was correct
-        CheckWinConditions(numberOfGuesses, correctGuesses)
-        
-        // Decrease the guess counter for EVERY guess
-        numberOfGuesses--;
-
-      });
-      
-    }
-    
-  }
-  
-  function HighlightGuess(correctGuesses, guess, i)
-  {
-
-      // Checking if the guess was in one of the random boxes
-      if ( guess.includes(i) )
-      {
-
-        // If the guess was correct Highlight the selected box with teal
-        $("#action-" + i).css("background-color", "#008080");
-        
-        // Disable click event on correct guess as they still guessing boxes
-        $("#action-" + i).removeClass("enable-click");
-        $("#action-" + i).addClass("disable-click");
-        
-        // Find the index of the value using $.inArray()
-        let index = $.inArray(i, guess);
-
-        // Remove the selected index from guess
-        if (index > -1) { // only splice array when item is found
-          guess.splice(index, 1); // 2nd parameter means remove one item only
-        }
-
-        // +1 correct guess
-        correctGuesses++;
-
-      }
-      else
-      {
-        // If the guess was wrong Highlight the selected box with red OR the box have already been selected once before!
-        $("#action-" + i).css("background-color", "#FF0000");
-      }
-
-    return correctGuesses;
-
-  }
-  
-  function CheckWinConditions(numberOfGuesses, correctGuesses)
-  {
-
-    // Checking if every guess was correct
-    if (numberOfGuesses == 1 && correctGuesses == tick)
-    {
-      NextLevel(); 
-    } 
-    else if ( numberOfGuesses == 1 && correctGuesses < tick )
-    {
-      // Make boxes temporarily untouchable so that we dont increment the tick
-      FreezeBoxes();
-
-      DisplayRetryMessage()
-      
-      running=UpdateBoolean(running, false);
-
-    }
-
-  }
-  
-  function DisplayRetryMessage()
-  {
-    // Display message to user
-      let html="<div class='text-secondary font-weight-bold'>No Guesses Left &nbsp;</div>";
-      html+="<div class='btn btn-primary retry-area mt-2'>";
-      html+="<div class='text-light font-weight-bold'>Try again</div>";
-      html+="</div>";
-      
-      // I want the pointer to be a cursor!
-      $("#retry").html(html);
-      $("#retry-container").show();
-
-  }
-
-  async function RemoveBackgroundColor()
-  {
-    // Wait for this function to finish animating boxes
-    await animateBox();
-
-    // Remove background color from animated boxes after 1 second
-    $(".Box").css("background-color", "");
-    
-  }
-
-  // This function holds a promise which finishes when the setTimeout is complete
-  // The boxes animates background ONE box at the time, as many boxes as there are in the array
-  // The animation will change background color - for 1 second and revert back to transparent background
-  function animateBox()
-  {
-    return new Promise((resolve) => {
-      
-      let animationTime = 0;
-      
-      // Boxes will change background color for a brief period
-      for ( let i = 0; i < randomBoxes.length; i++ )
-      {
-        
-        animationTime = i * 1000;
-        
-        // Animates one box at the time to change background color
-        setTimeout(() => {
-        
-          // Slow fade in effect with background color
-          $("#action-" + randomBoxes[i]).fadeIn("slow", function(){
-            
-            // Add custom Css
-            $(this).css({ "background-color": "blue", "opacity": "1" });
-            
-            // If we're on the last box, resolve the Promise
-            if (i === randomBoxes.length - 1) {
-                
-                // Add Delay by 1 second so that the user can see the last box
-                setTimeout(() => {
-
-                  resolve(); // All animations are now complete, continue to the next function
-              
-                }, 1000);
-
-            }
-
-          });
-          
-        }, animationTime); // Increment by i for each iteration.
-
-      }
-
-      // Add 1s delay for the last entry
-      animationTime+=1000;
-
-      // Meanwhile the boxes change color disable click event temporarly
-      DisablePointerEvent(animationTime);
-
-    });
-
-  }
-
-  function HideBackgroundColor()
-  {
-    for ( let i = 0; i < randomBoxes.length; i++ )
-    {
-      // Remove background color for the selected random boxes and change opacity level
-      $("#action-" + randomBoxes[i]).animate({backgroundColor: "", opacity: "0.1"}, "slow");
-    }
-  }
-
-  function PickRandomBoxes()
-  {
-  
-    let rememberUs=[]; // Store the random numbers
-    
-    do
-    {
-      
-      // random 4 numbers between 1 and maxBoxes 
-      for ( let i = 0; i < tick; i++ )
-      {
-      
-        // Get a random number 0-7 IMPORTANT to start from 0 index because to match id for box elements
-        let nextBox=Math.floor(Math.random() * boxes);
-
-        // Add numbers into the array as long as the Length of the array is shorter than the amount of numbers generated
-        if (!rememberUs.includes(nextBox) && rememberUs.length < tick) {
-          rememberUs.push(nextBox);
-        }
-
-        // If the array already has 'tick'(4) elements, break the loop
-        if (rememberUs.length >= tick) {
-          break;
-        }
-        
-      }
-
-    } while (rememberUs.length < tick);
-    
-    randomBoxes = rememberUs;
-    
-  }
-  
-  function FreezeBoxes()
-  {
-    // Temporarily make boxes untouchable
-    $(".Box").addClass("inactive-button");  
-  }
-
-  function DisablePointerEvent(animationTime)
-  {
-    // Disables boxes pointer event temporarily
-    $(".Box").addClass("disable-click");
-  
-    setTimeout(() =>
-    {
-      $(".Box").removeClass("disable-click");
-      $(".Box").addClass("enable-click");
-    }, animationTime);
-  }
-
-  function NextLevel()
-  {
-
-      // Player won! Runs one time per round
-      playerWon=UpdateBoolean(playerWon, true);
-
-      // Increment tick - tick is number of boxes that will change background color
-      tempTick=tick+1;
-      tick=UpdateNumber(tick, tempTick);
-
-      tempLevel=level+1;
-      level=UpdateNumber(level, tempLevel);
-      
-      // Increment display level
-      $(".level").html(tempLevel++);
-
-      // UpdateLines Is going to take argument array holding level on each line from 1 to 5.
-      // LINES 1 2 3 4 5
-      // LEVEL 0 0 0 0 0
-      // Line - 1, lines start at index 0
-      lines=UpdateLines((line - 1), level, lines);
-      
-      // Sets the current name and save lines + level to localstorage
-      SetNameAndSaveToStorage(lines, level);
-      
-      // Add the current highscore
-      DisplayHighscore(lines);
-      
-      // Request the next frame and store the ID
-      animationFrameId = requestAnimationFrame(GameLoop);
-  }
-
   // Add click event to reset score btn
   $("#reset-score").on("click", function(){
-
-    let resultObject = ResetScore(lines, level, line, tick);
-    lines=resultObject.lines;
-    level=resultObject.level;
-    line=resultObject.line;
-    tick=resultObject.tick;
-    
+    ResetScore();
   });
   
 });

@@ -1,18 +1,21 @@
 import { maxLines } from './functions.js';
+import { GetNonString, StoreNonString, GetString } from './helpers.js';
 
-export function DisplayHighscore(lines)
+export function DisplayHighscore()
 {
-    
+
+    let lines=GetNonString("lines");
+    let name=localStorage.getItem("name");
+
+    // Set name can only happen inside of an active function.
+    $("#name").html(name);
+
     // Set lines and level
     let html="";
     html="<tr>";
-    html+="<td> Level </td>";
+    html+="<td> Level </td>";        
     
-     // Set name can only happen inside of an active function.
-    let name = localStorage.getItem("name");
-    $("#name").html(name);
-
-   // Add the current score to highscore
+    // Add the current score to highscore
     for (let i = 0; i < lines.length; i++)
     {
         html+="<td>" + lines[i] + "</td>";
@@ -23,23 +26,17 @@ export function DisplayHighscore(lines)
     // Clear the old values and append new data
     $(".highscore").html("");
     $(".highscore").append(html);
-
 }
 
-export function SetNameAndSaveToStorage(lines, level)
+export function ResetScore()
 {
-    // Save new highscore to localStorage
-    localStorage.setItem("lines", JSON.stringify(lines));
-    localStorage.setItem("level", level);
-}
 
-
-export function ResetScore(lines, level, line, tick)
-{
-    // Set current name and save lines + level to localstorage
-    SetNameAndSaveToStorage(lines, level);
-    
     let arr=new Array(maxLines).fill(0);
+    
+    StoreNonString("lines", arr);
+    StoreNonString("tick", 1);
+    StoreNonString("level", 1);
+    StoreNonString("line", 0);
 
     // Display score
     DisplayHighscore(arr);
@@ -49,5 +46,21 @@ export function ResetScore(lines, level, line, tick)
     $("#won-container").hide();
     $("#message-container").hide();
 
-    return {tick: 1, level: 1, lines: arr, line: 0};
+}
+// unfinished function ment to check if the current highscore will be overwritten
+function CheckHighscore()
+{
+    let currentHighscore=GetNonString("currentHighscore");
+    let lastHighscore=GetNonString("lastHighscore");
+    
+    // If last highscore is larger than or equal to the currentHighscore then print the new highscore, else leave score as is
+    if ( currentHighscore > lastHighscore)
+    {
+        StoreNonString("currentHighscore", currentHighscore);
+    }
+    else if( lastHighscore > currentHighscore )
+    {
+        StoreNonString("currentHighscore", lastHighscore);
+    }
+
 }
