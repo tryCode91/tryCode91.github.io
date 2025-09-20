@@ -1,0 +1,340 @@
+/* Reset & basics */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: "Source Sans Pro", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  background-color: #252a34; /* <<< page background you asked for */
+  color: #eaeaea;
+}
+
+/* Full-width top nav (outside content wrapper) */
+.top-nav {
+  width: 100%;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #393f4d;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 10;
+  background: none; /* Remove the black background */
+}
+
+.top-nav ul {
+  display: flex;
+  list-style: none;
+  justify-content: center; /* Center the menu */
+  gap: 2rem; /* Add space between menu items */
+  padding: 1rem 0;
+  background: none; /* Remove the black background */
+}
+
+.top-nav a {
+  text-decoration: none;
+  color: #08d9d6; /* Accent color */
+  font-size: 1.5rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.top-nav a:hover {
+  color: #ffffff; /* Change color on hover */
+}
+
+/* HR separating nav + content (full width) */
+hr.site-sep {
+  border: none;
+  height: 1px;
+  background: #393f4d;
+  margin: 0;
+}
+
+/* Shift all content slightly left */
+.wrapper {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  margin-left: 150px; /* Move the entire content 50px to the left */
+}
+
+
+/* Adjust grid layout for sidebar and content */
+.main-grid {
+  display: grid;
+  grid-template-columns: 220px 2fr; /* Increase sidebar width to 220px */
+  gap: 2rem; /* Space between sidebar and content */
+  align-items: start;
+  margin-top: 2rem;
+}
+
+
+/* Sidebar styling (left column) */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center-align content */
+  padding-left: 0;
+  padding-right: 2rem;
+  text-align: center; /* Center-align text */
+}
+/* Name and subtitle */
+.left-col h1 {
+  font-size: 1.8rem; /* Increase font size for the name */
+  color: #08d9d6;
+  margin-bottom: 0.5rem;
+}
+
+.left-col h2 {
+  font-size: 1rem; /* Increase font size for the subtitle */
+  color: #eaeaea;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+/* Sidebar image */
+.left-col .profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%; /* Make the image circular */
+  object-fit: cover;
+  border: 2px solid #08d9d6; /* Optional: Add a border */
+  margin-bottom: 1rem;
+}
+
+/* Add padding to the main content */
+.right-col {
+  padding-left: 2rem; /* Add space to the left of the main content */
+}
+/* Optional: adjust headings and paragraphs spacing */
+.right-col h3 {
+  color: #08d9d6;         /* keep accent color for headings */
+  margin-bottom: 0.5rem;
+}
+.right-col p, .right-col li {
+  color: #d9dbe5;
+  margin-bottom: 0.5rem;
+}
+/* Remove card styles for right-col */
+.right-col .card,
+.post-preview {
+  background: none;       /* remove background color */
+  border-radius: 0;       /* remove rounded corners */
+  box-shadow: none;       /* remove shadow */
+  padding: 0;             /* optional: remove padding if you want edge-to-edge text */
+}
+
+.right-col h3 {
+  color: #08d9d6;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+}
+.right-col p, .right-col li {
+  color: #d9dbe5;
+  margin-bottom: 0.5rem;
+}
+
+/* Small utilities */
+.footer {
+  margin-top: 2.5rem;
+  color: #9ea2b5;
+  font-size: 0.9rem;
+  text-align: center;
+  border-top: 1px solid #393f4d;
+  padding-top: 1rem;
+}
+
+/* Cards used elsewhere (keeps consistency) */
+.card-small {
+  background: #2f3441;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.32);
+}
+
+/* Title styling */
+.card h3 {
+  font-size: 1.5rem; /* Slightly smaller title size */
+  margin-bottom: 1rem; /* Keep space below the title */
+  color: #08d9d6; /* Accent color */
+}
+
+/* HR separator for sections */
+.section-sep {
+  border: none;
+  border-top: 1px solid #444; /* Subtle line */
+  margin: 0.5rem 0; /* Reduce space above and below the HR */
+}
+
+/* Blog post metadata */
+.post-meta {
+  font-size: 0.85rem;
+  color: #eaeaea;
+  margin: 0.3rem 0; /* Reduce space between metadata and text */
+  display: flex;
+  gap: 1rem;
+}
+
+.post-meta span {
+  display: flex;
+  align-items: center;
+}
+
+.post-meta .post-date::before {
+  content: "📅"; /* Calendar icon */
+  margin-right: 0.3rem;
+}
+
+.post-meta .post-read-time::before {
+  content: "⏱"; /* Clock icon */
+  margin-right: 0.3rem;
+}
+
+/* Blog post title styling */
+.blog-link h4 {
+  font-size: 1.25em;
+  margin-bottom: 0.2rem; /* Reduce space below the title */
+  text-decoration: underline;
+}
+
+/* Blog post paragraphs */
+.blog-link p {
+  font-size: 0.9rem;
+  color: #eaeaea;
+  margin: 0.2rem 0; /* Reduce space between paragraphs */
+  line-height: 1.4; /* Adjust line spacing for better readability */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add "..." for overflow */
+}
+
+/* Blog post excerpt */
+.blog-link p {
+  font-size: 0.9rem;
+  color: #eaeaea;
+  margin-top: 0.3rem; /* Reduce space between metadata and excerpt */
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 800px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .left-col { margin-bottom: 1rem; text-align: left; }
+  .left-col h1 { font-size: 2rem; }
+}
+
+/* Additional breakpoint for very small screens (350px and below) */
+@media (max-width: 350px) {
+  .left-col h1 {
+    font-size: 1.5rem; /* Reduce the font size of the name */
+  }
+
+  .left-col h2 {
+    font-size: 0.8rem; /* Reduce subtitle font size */
+  }
+
+  .profile-img {
+    width: 100px; /* Make the profile image smaller */
+    height: 100px;
+  }
+
+  .main-grid {
+    gap: 1rem; /* Reduce the gap between sidebar and content */
+  }
+
+  .blog-link h4 {
+    font-size: 1rem; /* Reduce blog post title size */
+  }
+
+  .blog-link p {
+    font-size: 0.8rem; /* Reduce blog post excerpt size */
+  }
+}
+
+.social-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.social-links li {
+  margin-bottom: 0.5rem;
+}
+
+.social-links a {
+  color: #08d9d6;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.social-links a:hover {
+  color: #eaeaea;
+}
+
+/* Blog posts list */
+.blog-posts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.blog-posts li {
+  margin-bottom: 1.5rem;
+}
+
+.blog-link {
+  text-decoration: none;
+  color: #08d9d6;
+  transition: color 0.2s ease;
+}
+
+.blog-link:hover {
+  color: #eaeaea;
+}
+
+/* Recent Posts Section in Right Column */
+.recent-posts {
+  margin-top: 0rem; /* Move the section up by reducing the margin */
+}
+
+.recent-posts h3 {
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-size: 2rem; /* Increase font size */
+  font-weight: bold; /* Make the text thicker */
+  position: relative;
+}
+
+.recent-posts h3::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #08d9d6, transparent);
+  bottom: -4px;
+  left: 0;
+}
+
+.recent-posts .section-sep {
+  margin: 1rem 0;
+}
+
+.recent-posts .blog-posts li {
+  margin-bottom: 1rem;
+}
+
+.recent-posts .blog-link h4 {
+  font-size: 1.8rem; /* Increase blog post title size */
+  font-weight: bold; /* Make the title thicker */
+  margin-bottom: 0.5rem;
+  color: #08d9d6;
+}
+
+.recent-posts .blog-link p {
+  font-size: 1rem; /* Increase paragraph font size */
+  font-weight: 500; /* Make the text slightly thicker */
+  color: #d9dbe5;
+  margin-top: 0.3rem;
+}
+

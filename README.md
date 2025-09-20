@@ -1,2 +1,3 @@
 # tryCode91.github.io
-Blog
+
+A blog for my thoughts
